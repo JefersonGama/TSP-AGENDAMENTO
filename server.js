@@ -11,6 +11,9 @@ const { verificarAutenticacao, verificarAdmin, hashPassword, verificarPassword }
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Confiar no proxy do Render
+app.set('trust proxy', 1);
+
 // Middlewares
 app.use(cors({
   origin: true,
@@ -23,8 +26,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // Sempre true, pois o Render usa HTTPS
     httpOnly: true,
+    sameSite: 'none', // Importante para cookies cross-site no Render
     maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
 }));
