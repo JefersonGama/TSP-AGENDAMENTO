@@ -3,7 +3,7 @@ const path = require('path');
 
 // ID da planilha do Google Sheets
 const SPREADSHEET_ID = '1j2eko9UmxAHGvtVkslvkz0B5rzODwba21YpFKnULYVE';
-const RANGE = 'Banco!A:I'; // SA, Nome, Telefone, Endereço, Tipo serviço, MICRO TERR., Plano, VERIFICADOR, CIDADE
+const RANGE = 'Banco!A:AK'; // Todas as colunas até VERIFICADOR (AK)
 const RANGE_USUARIOS = 'DADOS DE ACESSO!A:C'; // Aba de usuários
 
 async function importarDadosDaPlanilha() {
@@ -51,16 +51,17 @@ async function importarDadosDaPlanilha() {
     const dados = rows.slice(1);
 
     // Mapear dados da planilha para o formato do banco
+    // E(4)=SA, F(5)=Nome, G(6)=Tel, H(7)=End, N(13)=TipoServ, Q(16)=Cidade, AA(26)=MicroTerr, AF(31)=Plano, AK(36)=Verif
     const clientes = dados.map(row => ({
-      sa: row[0] || '',
-      nome: row[1] || '',
-      telefone: row[2] || '',
-      endereco: row[3] || '',
-      tipo_servico: row[4] || '',
-      micro_terr: row[5] || '',
-      plano: row[6] || '',
-      verificador: row[7] || '',
-      cidade: row[8] || '',
+      sa: row[4] || '',           // Coluna E
+      nome: row[5] || '',          // Coluna F
+      telefone: row[6] || '',      // Coluna G
+      endereco: row[7] || '',      // Coluna H
+      tipo_servico: row[13] || '', // Coluna N
+      cidade: row[16] || '',       // Coluna Q
+      micro_terr: row[26] || '',   // Coluna AA
+      plano: row[31] || '',        // Coluna AF
+      verificador: row[36] || '',  // Coluna AK
     })).filter(cliente => cliente.nome);
 
     return { sucesso: true, dados: clientes };
@@ -88,16 +89,17 @@ async function importarDadosPlanilhaPublica() {
     // Remover apenas a primeira linha (cabeçalho) - dados começam na linha 2
     const dados = linhas.slice(1);
 
+    // E(4)=SA, F(5)=Nome, G(6)=Tel, H(7)=End, N(13)=TipoServ, Q(16)=Cidade, AA(26)=MicroTerr, AF(31)=Plano, AK(36)=Verif
     const clientes = dados.map(row => ({
-      sa: row[0] || '',
-      nome: row[1] || '',
-      telefone: row[2] || '',
-      endereco: row[3] || '',
-      tipo_servico: row[4] || '',
-      micro_terr: row[5] || '',
-      plano: row[6] || '',
-      verificador: row[7] || '',
-      cidade: row[8] || '',
+      sa: row[4] || '',           // Coluna E
+      nome: row[5] || '',          // Coluna F
+      telefone: row[6] || '',      // Coluna G
+      endereco: row[7] || '',      // Coluna H
+      tipo_servico: row[13] || '', // Coluna N
+      cidade: row[16] || '',       // Coluna Q
+      micro_terr: row[26] || '',   // Coluna AA
+      plano: row[31] || '',        // Coluna AF
+      verificador: row[36] || '',  // Coluna AK
     })).filter(cliente => cliente.nome);
 
     return { sucesso: true, dados: clientes };
