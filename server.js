@@ -206,13 +206,15 @@ app.get('/api/clientes', verificarAutenticacao, (req, res) => {
     params.push(data_fim);
   }
 
-  query += ' ORDER BY data_agendamento ASC, horario ASC';
+  query += ' ORDER BY criado_em DESC LIMIT 1000';
 
   db.all(query, params, (err, rows) => {
     if (err) {
+      console.error('[API] Erro ao buscar clientes:', err);
       res.status(500).json({ error: err.message });
       return;
     }
+    console.log('[API] Clientes encontrados:', rows.length);
     res.json(rows);
   });
 });
@@ -338,9 +340,16 @@ app.get('/api/estatisticas', verificarAutenticacao, (req, res) => {
 // Importar dados do Google Sheets
 app.post('/api/importar-planilha', verificarAutenticacao, async (req, res) => {
   try {
+    console.log('[API] Iniciando importação da planilha...');
     const resultado = await importarDadosDaPlanilha();
 
+    console.log('[API] Resultado da importação:', {
+      sucesso: resultado.sucesso,
+      totalRegistros: resultado.dados?.length || 0
+    });
+
     if (!resultado.sucesso) {
+      console.error('[API] Erro na importação:', resultado.mensagem);
       res.status(500).json({ error: resultado.mensagem });
       return;
     }
@@ -389,6 +398,7 @@ app.post('/api/importar-planilha', verificarAutenticacao, async (req, res) => {
 // Sincronizar (limpar e reimportar)
 app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) => {
   try {
+    console.log('[API] Iniciando sincronização...');
     // Limpar tabela
     await new Promise((resolve, reject) => {
       db.run('DELETE FROM clientes', (err) => {
@@ -396,10 +406,17 @@ app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) =>
         else resolve();
       });
     });
+    console.log('[API] Tabela limpa com sucesso');
 
     const resultado = await importarDadosDaPlanilha();
 
+    console.log('[API] Resultado da importação:', {
+      sucesso: resultado.sucesso,
+      totalRegistros: resultado.dados?.length || 0
+    });
+
     if (!resultado.sucesso) {
+      console.error('[API] Erro na sincronização:', resultado.mensagem);
       res.status(500).json({ error: resultado.mensagem });
       return;
     }
