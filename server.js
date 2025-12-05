@@ -238,7 +238,7 @@ app.get('/api/clientes/:id', verificarAutenticacao, (req, res) => {
 
 // Criar novo cliente
 app.post('/api/clientes', verificarAutenticacao, (req, res) => {
-  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, observacao } = req.body;
 
   if (!nome) {
     res.status(400).json({ error: 'Nome do cliente é obrigatório' });
@@ -246,13 +246,13 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
   }
 
   const query = `
-    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status, observacao)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
     query,
-    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, 'COP'],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, 'COP', observacao],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -269,18 +269,18 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
 // Atualizar cliente
 app.put('/api/clientes/:id', verificarAutenticacao, (req, res) => {
   const { id } = req.params;
-  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status, observacao } = req.body;
 
   const query = `
     UPDATE clientes 
     SET sa = ?, nome = ?, telefone = ?, endereco = ?, 
-        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, cidade = ?, status = ?, atualizado_em = CURRENT_TIMESTAMP
+        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, cidade = ?, status = ?, observacao = ?, atualizado_em = CURRENT_TIMESTAMP
     WHERE id = ?
   `;
 
   db.run(
     query,
-    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status || 'COP', id],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status || 'COP', observacao, id],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });

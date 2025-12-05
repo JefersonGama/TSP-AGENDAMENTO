@@ -54,6 +54,9 @@
                 <button class="btn btn-sync" onclick="sincronizarPlanilha()">
                     🔄 Sincronizar
                 </button>
+                <button class="btn btn-copy" onclick="copiarTelefones()">
+                    📋 Copiar Telefones
+                </button>
             </div>
             
             <div class="search-bar">
@@ -79,12 +82,13 @@
                         <th>VERIFICADOR</th>
                         <th>CIDADE</th>
                         <th>Status</th>
+                        <th>Observação</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela">
                     <tr>
-                        <td colspan="11" class="loading">Carregando...</td>
+                        <td colspan="12" class="loading">Carregando...</td>
                     </tr>
                 </tbody>
             </table>
@@ -148,6 +152,11 @@
                 <div class="form-group">
                     <label for="cidade">CIDADE</label>
                     <input type="text" id="cidade" placeholder="Cidade">
+                </div>
+
+                <div class="form-group">
+                    <label for="observacao">Observação</label>
+                    <textarea id="observacao" rows="3" placeholder="Observações sobre o cliente..."></textarea>
                 </div>
 
                 <div class="form-actions">

@@ -106,9 +106,12 @@ function renderizarTabela(clientes) {
     const tbody = document.getElementById('corpo-tabela');
     
     if (clientes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="11" class="empty">Nenhum cliente encontrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="empty">Nenhum cliente encontrado</td></tr>';
         return;
     }
+
+    // Armazenar clientes filtrados para copiar telefones
+    window.clientesFiltrados = clientes;
 
     tbody.innerHTML = clientes.map(cliente => `
         <tr>
@@ -131,6 +134,7 @@ function renderizarTabela(clientes) {
                     <option value="ENCAIXE ENVIADO" ${cliente.status === 'ENCAIXE ENVIADO' ? 'selected' : ''}>ENCAIXE ENVIADO</option>
                 </select>
             </td>
+            <td><div class="observacao-cell">${cliente.observacao || '-'}</div></td>
             <td>
                 <div class="actions">
                     <button class="btn btn-edit" onclick="editarCliente(${cliente.id})">✏️ Editar</button>
@@ -197,6 +201,7 @@ async function carregarClienteParaEdicao(id) {
         document.getElementById('plano').value = cliente.plano || '';
         document.getElementById('verificador').value = cliente.verificador || '';
         document.getElementById('cidade').value = cliente.cidade || '';
+        document.getElementById('observacao').value = cliente.observacao || '';
     } catch (error) {
         console.error('Erro ao carregar cliente:', error);
         mostrarErro('Erro ao carregar dados do cliente');
@@ -217,7 +222,8 @@ async function salvarCliente(event) {
         micro_terr: document.getElementById('micro-terr').value,
         plano: document.getElementById('plano').value,
         verificador: document.getElementById('verificador').value,
-        cidade: document.getElementById('cidade').value
+        cidade: document.getElementById('cidade').value,
+        observacao: document.getElementById('observacao').value
     };
 
     try {
@@ -344,6 +350,48 @@ async function importarPlanilha() {
         alert('❌ Erro ao importar planilha: ' + error.message);
         event.target.disabled = false;
     }
+}
+
+// Copiar telefones dos clientes filtrados
+function copiarTelefones() {
+    if (!window.clientesFiltrados || window.clientesFiltrados.length === 0) {
+        alert('⚠️ Nenhum cliente na lista para copiar telefones!');
+        return;
+    }
+
+    // Extrair apenas telefones que não são vazios
+    const telefones = window.clientesFiltrados
+        .map(c => c.telefone)
+        .filter(tel => tel && tel !== '-')
+        .join('\n');
+
+    if (telefones.length === 0) {
+        alert('⚠️ Nenhum telefone encontrado nos clientes filtrados!');
+        return;
+    }
+
+    // Copiar para área de transferência
+    navigator.clipboard.writeText(telefones).then(() => {
+        const total = telefones.split('\n').length;
+        alert(`✅ ${total} telefone(s) copiado(s) com sucesso!`);
+    }).catch(err => {
+        console.error('Erro ao copiar:', err);
+        // Fallback: criar textarea temporário
+        const textarea = document.createElement('textarea');
+        textarea.value = telefones;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            const total = telefones.split('\n').length;
+            alert(`✅ ${total} telefone(s) copiado(s) com sucesso!`);
+        } catch (e) {
+            alert('❌ Erro ao copiar telefones');
+        }
+        document.body.removeChild(textarea);
+    });
 }
 
 // Alterar status do cliente

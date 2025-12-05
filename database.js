@@ -20,6 +20,7 @@ db.serialize(() => {
       verificador TEXT,
       cidade TEXT,
       status TEXT DEFAULT 'COP',
+      observacao TEXT,
       criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
       atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )
@@ -29,6 +30,13 @@ db.serialize(() => {
   db.run(`ALTER TABLE clientes ADD COLUMN status TEXT DEFAULT 'COP'`, (err) => {
     if (err && !err.message.includes('duplicate column')) {
       console.error('Erro ao adicionar coluna status:', err);
+    }
+  });
+
+  // Adicionar coluna observacao se não existir
+  db.run(`ALTER TABLE clientes ADD COLUMN observacao TEXT`, (err) => {
+    if (err && !err.message.includes('duplicate column')) {
+      console.error('Erro ao adicionar coluna observacao:', err);
     }
   });
 
