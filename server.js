@@ -236,21 +236,21 @@ app.get('/api/clientes/:id', verificarAutenticacao, (req, res) => {
 
 // Criar novo cliente
 app.post('/api/clientes', verificarAutenticacao, (req, res) => {
-  const { nome, telefone, data_agendamento, horario, tipo_servico, status, observacoes } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador } = req.body;
 
-  if (!nome || !data_agendamento) {
-    res.status(400).json({ error: 'Nome e data de agendamento são obrigatórios' });
+  if (!nome) {
+    res.status(400).json({ error: 'Nome do cliente é obrigatório' });
     return;
   }
 
   const query = `
-    INSERT INTO clientes (nome, telefone, data_agendamento, horario, tipo_servico, status, observacoes)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
     query,
-    [nome, telefone, data_agendamento, horario, tipo_servico, status || 'Pendente', observacoes],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -267,18 +267,18 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
 // Atualizar cliente
 app.put('/api/clientes/:id', verificarAutenticacao, (req, res) => {
   const { id } = req.params;
-  const { nome, telefone, data_agendamento, horario, tipo_servico, status, observacoes } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador } = req.body;
 
   const query = `
     UPDATE clientes 
-    SET nome = ?, telefone = ?, data_agendamento = ?, horario = ?, 
-        tipo_servico = ?, status = ?, observacoes = ?, atualizado_em = CURRENT_TIMESTAMP
+    SET sa = ?, nome = ?, telefone = ?, endereco = ?, 
+        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, atualizado_em = CURRENT_TIMESTAMP
     WHERE id = ?
   `;
 
   db.run(
     query,
-    [nome, telefone, data_agendamento, horario, tipo_servico, status, observacoes, id],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, id],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -354,13 +354,13 @@ app.post('/api/importar-planilha', verificarAutenticacao, async (req, res) => {
       try {
         await new Promise((resolve, reject) => {
           const query = `
-            INSERT INTO clientes (nome, telefone, data_agendamento, horario, tipo_servico, status, observacoes)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
           `;
           db.run(
             query,
-            [cliente.nome, cliente.telefone, cliente.data_agendamento, cliente.horario, 
-             cliente.tipo_servico, cliente.status, cliente.observacoes],
+            [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
+             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador],
             function(err) {
               if (err) reject(err);
               else resolve();
@@ -411,13 +411,13 @@ app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) =>
       try {
         await new Promise((resolve, reject) => {
           const query = `
-            INSERT INTO clientes (nome, telefone, data_agendamento, horario, tipo_servico, status, observacoes)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
           `;
           db.run(
             query,
-            [cliente.nome, cliente.telefone, cliente.data_agendamento, cliente.horario, 
-             cliente.tipo_servico, cliente.status, cliente.observacoes],
+            [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
+             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador],
             function(err) {
               if (err) reject(err);
               else resolve();

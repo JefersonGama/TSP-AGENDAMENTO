@@ -3,7 +3,7 @@ const path = require('path');
 
 // ID da planilha do Google Sheets
 const SPREADSHEET_ID = '1j2eko9UmxAHGvtVkslvkz0B5rzODwba21YpFKnULYVE';
-const RANGE = 'banco!A:H'; // Ajuste conforme suas colunas
+const RANGE = 'SA!A:H'; // SA, Nome, Telefone, Endereço, Tipo serviço, MICRO TERR., Plano, VERIFICADOR
 const RANGE_USUARIOS = 'DADOS DE ACESSO!A:C'; // Aba de usuários
 
 async function importarDadosDaPlanilha() {
@@ -73,7 +73,7 @@ async function importarDadosDaPlanilha() {
 async function importarDadosPlanilhaPublica() {
   try {
     // URL para obter CSV da planilha pública
-    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=banco`;
+    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=SA`;
     
     const fetch = (await import('node-fetch')).default;
     const response = await fetch(url);
@@ -88,14 +88,15 @@ async function importarDadosPlanilhaPublica() {
     const dados = linhas.slice(1);
 
     const clientes = dados.map(row => ({
-      nome: row[0] || '',
-      telefone: row[1] || '',
-      data_agendamento: formatarDataParaBanco(row[2] || ''),
-      horario: row[3] || '',
+      sa: row[0] || '',
+      nome: row[1] || '',
+      telefone: row[2] || '',
+      endereco: row[3] || '',
       tipo_servico: row[4] || '',
-      status: row[5] || 'Pendente',
-      observacoes: row[6] || '',
-    })).filter(cliente => cliente.nome && cliente.data_agendamento);
+      micro_terr: row[5] || '',
+      plano: row[6] || '',
+      verificador: row[7] || '',
+    })).filter(cliente => cliente.nome);
 
     return { sucesso: true, dados: clientes };
   } catch (error) {

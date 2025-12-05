@@ -104,19 +104,20 @@ function renderizarTabela(clientes) {
     const tbody = document.getElementById('corpo-tabela');
     
     if (clientes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="empty">Nenhum cliente encontrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="empty">Nenhum cliente encontrado</td></tr>';
         return;
     }
 
     tbody.innerHTML = clientes.map(cliente => `
         <tr>
+            <td>${cliente.sa || '-'}</td>
             <td>${cliente.nome}</td>
             <td>${cliente.telefone || '-'}</td>
-            <td>${formatarData(cliente.data_agendamento)}</td>
-            <td>${cliente.horario || '-'}</td>
+            <td>${cliente.endereco || '-'}</td>
             <td>${cliente.tipo_servico || '-'}</td>
-            <td><span class="status-badge status-${cliente.status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}">${cliente.status}</span></td>
-            <td>${cliente.observacoes || '-'}</td>
+            <td>${cliente.micro_terr || '-'}</td>
+            <td>${cliente.plano || '-'}</td>
+            <td>${cliente.verificador || '-'}</td>
             <td>
                 <div class="actions">
                     <button class="btn btn-edit" onclick="editarCliente(${cliente.id})">✏️ Editar</button>
@@ -174,13 +175,14 @@ async function carregarClienteParaEdicao(id) {
         const cliente = await response.json();
         
         document.getElementById('cliente-id').value = cliente.id;
+        document.getElementById('sa').value = cliente.sa || '';
         document.getElementById('nome').value = cliente.nome;
         document.getElementById('telefone').value = cliente.telefone || '';
-        document.getElementById('data-agendamento').value = cliente.data_agendamento;
-        document.getElementById('horario').value = cliente.horario || '';
+        document.getElementById('endereco').value = cliente.endereco || '';
         document.getElementById('tipo-servico').value = cliente.tipo_servico || '';
-        document.getElementById('status').value = cliente.status;
-        document.getElementById('observacoes').value = cliente.observacoes || '';
+        document.getElementById('micro-terr').value = cliente.micro_terr || '';
+        document.getElementById('plano').value = cliente.plano || '';
+        document.getElementById('verificador').value = cliente.verificador || '';
     } catch (error) {
         console.error('Erro ao carregar cliente:', error);
         mostrarErro('Erro ao carregar dados do cliente');
@@ -193,13 +195,14 @@ async function salvarCliente(event) {
     
     const id = document.getElementById('cliente-id').value;
     const dados = {
+        sa: document.getElementById('sa').value,
         nome: document.getElementById('nome').value,
         telefone: document.getElementById('telefone').value,
-        data_agendamento: document.getElementById('data-agendamento').value,
-        horario: document.getElementById('horario').value,
+        endereco: document.getElementById('endereco').value,
         tipo_servico: document.getElementById('tipo-servico').value,
-        status: document.getElementById('status').value,
-        observacoes: document.getElementById('observacoes').value
+        micro_terr: document.getElementById('micro-terr').value,
+        plano: document.getElementById('plano').value,
+        verificador: document.getElementById('verificador').value
     };
 
     try {

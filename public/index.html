@@ -79,19 +79,20 @@
             <table id="tabela-clientes">
                 <thead>
                     <tr>
-                        <th>Nome</th>
+                        <th>SA</th>
+                        <th>Nome do Cliente</th>
                         <th>Telefone</th>
-                        <th>Data</th>
-                        <th>Horário</th>
+                        <th>Endereço</th>
                         <th>Tipo de Serviço</th>
-                        <th>Status</th>
-                        <th>Observações</th>
+                        <th>MICRO TERR.</th>
+                        <th>Plano</th>
+                        <th>VERIFICADOR</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela">
                     <tr>
-                        <td colspan="8" class="loading">Carregando...</td>
+                        <td colspan="9" class="loading">Carregando...</td>
                     </tr>
                 </tbody>
             </table>
@@ -113,6 +114,11 @@
                 <input type="hidden" id="cliente-id">
                 
                 <div class="form-group">
+                    <label for="sa">SA</label>
+                    <input type="text" id="sa" placeholder="Número SA">
+                </div>
+
+                <div class="form-group">
                     <label for="nome">Nome do Cliente *</label>
                     <input type="text" id="nome" required>
                 </div>
@@ -122,36 +128,29 @@
                     <input type="tel" id="telefone" placeholder="(00) 00000-0000">
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="data-agendamento">Data do Agendamento *</label>
-                        <input type="date" id="data-agendamento" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="horario">Horário</label>
-                        <input type="time" id="horario">
-                    </div>
+                <div class="form-group">
+                    <label for="endereco">Endereço</label>
+                    <input type="text" id="endereco" placeholder="Endereço completo">
                 </div>
 
                 <div class="form-group">
                     <label for="tipo-servico">Tipo de Serviço</label>
-                    <input type="text" id="tipo-servico" placeholder="Ex: Consulta, Reunião, Atendimento...">
+                    <input type="text" id="tipo-servico" placeholder="Ex: Instalação, Manutenção, Suporte...">
                 </div>
 
                 <div class="form-group">
-                    <label for="status">Status</label>
-                    <select id="status">
-                        <option value="Pendente">Pendente</option>
-                        <option value="Confirmado">Confirmado</option>
-                        <option value="Concluído">Concluído</option>
-                        <option value="Cancelado">Cancelado</option>
-                    </select>
+                    <label for="micro-terr">MICRO TERR.</label>
+                    <input type="text" id="micro-terr" placeholder="Micro território">
                 </div>
 
                 <div class="form-group">
-                    <label for="observacoes">Observações</label>
-                    <textarea id="observacoes" rows="3" placeholder="Informações adicionais..."></textarea>
+                    <label for="plano">Plano</label>
+                    <input type="text" id="plano" placeholder="Plano contratado">
+                </div>
+
+                <div class="form-group">
+                    <label for="verificador">VERIFICADOR</label>
+                    <input type="text" id="verificador" placeholder="Status de verificação">
                 </div>
 
                 <div class="form-actions">

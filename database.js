@@ -10,13 +10,14 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS clientes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      sa TEXT,
       nome TEXT NOT NULL,
       telefone TEXT,
-      data_agendamento TEXT NOT NULL,
-      horario TEXT,
+      endereco TEXT,
       tipo_servico TEXT,
-      status TEXT DEFAULT 'Pendente',
-      observacoes TEXT,
+      micro_terr TEXT,
+      plano TEXT,
+      verificador TEXT,
       criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
       atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )
