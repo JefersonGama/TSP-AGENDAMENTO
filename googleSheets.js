@@ -53,14 +53,16 @@ async function importarDadosDaPlanilha() {
 
     // Mapear dados da planilha para o formato do banco
     const clientes = dados.map(row => ({
-      nome: row[0] || '',
-      telefone: row[1] || '',
-      data_agendamento: formatarDataParaBanco(row[2] || ''),
-      horario: row[3] || '',
+      sa: row[0] || '',
+      nome: row[1] || '',
+      telefone: row[2] || '',
+      endereco: row[3] || '',
       tipo_servico: row[4] || '',
-      status: row[5] || 'Pendente',
-      observacoes: row[6] || '',
-    })).filter(cliente => cliente.nome && cliente.data_agendamento); // Filtrar linhas vazias
+      micro_terr: row[5] || '',
+      plano: row[6] || '',
+      verificador: row[7] || '',
+      cidade: row[8] || '',
+    })).filter(cliente => cliente.nome);
 
     return { sucesso: true, dados: clientes };
   } catch (error) {
