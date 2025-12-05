@@ -19,10 +19,18 @@ db.serialize(() => {
       plano TEXT,
       verificador TEXT,
       cidade TEXT,
+      status TEXT DEFAULT 'COP',
       criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
       atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Adicionar coluna status se não existir
+  db.run(`ALTER TABLE clientes ADD COLUMN status TEXT DEFAULT 'COP'`, (err) => {
+    if (err && !err.message.includes('duplicate column')) {
+      console.error('Erro ao adicionar coluna status:', err);
+    }
+  });
 
   // Tabela de usuários
   db.run(`

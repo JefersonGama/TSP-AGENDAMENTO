@@ -246,13 +246,13 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
   }
 
   const query = `
-    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
     query,
-    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, 'COP'],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -269,18 +269,18 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
 // Atualizar cliente
 app.put('/api/clientes/:id', verificarAutenticacao, (req, res) => {
   const { id } = req.params;
-  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status } = req.body;
 
   const query = `
     UPDATE clientes 
     SET sa = ?, nome = ?, telefone = ?, endereco = ?, 
-        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, cidade = ?, atualizado_em = CURRENT_TIMESTAMP
+        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, cidade = ?, status = ?, atualizado_em = CURRENT_TIMESTAMP
     WHERE id = ?
   `;
 
   db.run(
     query,
-    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, id],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status || 'COP', id],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -293,6 +293,32 @@ app.put('/api/clientes/:id', verificarAutenticacao, (req, res) => {
       res.json({ message: 'Cliente atualizado com sucesso' });
     }
   );
+});
+
+// Atualizar status do cliente
+app.put('/api/clientes/:id/status', verificarAutenticacao, (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ error: 'Status é obrigatório' });
+  }
+
+  const query = 'UPDATE clientes SET status = ?, atualizado_em = CURRENT_TIMESTAMP WHERE id = ?';
+
+  db.run(query, [status, id], function(err) {
+    if (err) {
+      console.error('[API] Erro ao atualizar status:', err);
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    if (this.changes === 0) {
+      res.status(404).json({ error: 'Cliente não encontrado' });
+      return;
+    }
+    console.log(`[API] Status do cliente ${id} alterado para: ${status}`);
+    res.json({ message: 'Status atualizado com sucesso' });
+  });
 });
 
 // Deletar cliente
@@ -363,13 +389,13 @@ app.post('/api/importar-planilha', verificarAutenticacao, async (req, res) => {
       try {
         await new Promise((resolve, reject) => {
           const query = `
-            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
           db.run(
             query,
             [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
-             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade],
+             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, 'COP'],
             function(err) {
               if (err) reject(err);
               else resolve();
@@ -428,13 +454,13 @@ app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) =>
       try {
         await new Promise((resolve, reject) => {
           const query = `
-            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
           db.run(
             query,
             [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
-             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade],
+             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, 'COP'],
             function(err) {
               if (err) reject(err);
               else resolve();

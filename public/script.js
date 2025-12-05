@@ -106,7 +106,7 @@ function renderizarTabela(clientes) {
     const tbody = document.getElementById('corpo-tabela');
     
     if (clientes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="empty">Nenhum cliente encontrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" class="empty">Nenhum cliente encontrado</td></tr>';
         return;
     }
 
@@ -121,6 +121,16 @@ function renderizarTabela(clientes) {
             <td>${cliente.plano || '-'}</td>
             <td>${cliente.verificador || '-'}</td>
             <td>${cliente.cidade || '-'}</td>
+            <td>
+                <select class="status-select" onchange="alterarStatus(${cliente.id}, this.value)" data-status="${cliente.status || 'COP'}">
+                    <option value="COP" ${(cliente.status || 'COP') === 'COP' ? 'selected' : ''}>COP</option>
+                    <option value="WHATS ENVIADO" ${cliente.status === 'WHATS ENVIADO' ? 'selected' : ''}>WHATS ENVIADO</option>
+                    <option value="CONFIRMADO" ${cliente.status === 'CONFIRMADO' ? 'selected' : ''}>CONFIRMADO</option>
+                    <option value="MANTER AGENDAMENTO" ${cliente.status === 'MANTER AGENDAMENTO' ? 'selected' : ''}>MANTER AGENDAMENTO</option>
+                    <option value="INSTALADO" ${cliente.status === 'INSTALADO' ? 'selected' : ''}>INSTALADO</option>
+                    <option value="ENCAIXE ENVIADO" ${cliente.status === 'ENCAIXE ENVIADO' ? 'selected' : ''}>ENCAIXE ENVIADO</option>
+                </select>
+            </td>
             <td>
                 <div class="actions">
                     <button class="btn btn-edit" onclick="editarCliente(${cliente.id})">✏️ Editar</button>
@@ -333,6 +343,30 @@ async function importarPlanilha() {
         console.error('Erro ao importar planilha:', error);
         alert('❌ Erro ao importar planilha: ' + error.message);
         event.target.disabled = false;
+    }
+}
+
+// Alterar status do cliente
+async function alterarStatus(id, novoStatus) {
+    try {
+        const response = await fetch(`${API_URL}/clientes/${id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ status: novoStatus })
+        });
+
+        if (response.ok) {
+            mostrarSucesso('Status alterado com sucesso!');
+        } else {
+            const error = await response.json();
+            mostrarErro(error.error || 'Erro ao alterar status');
+            carregarClientes(); // Recarregar para reverter o select
+        }
+    } catch (error) {
+        console.error('Erro ao alterar status:', error);
+        mostrarErro('Erro ao alterar status');
+        carregarClientes(); // Recarregar para reverter o select
     }
 }
 
