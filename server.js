@@ -26,9 +26,9 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, // Sempre true, pois o Render usa HTTPS
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'none', // Importante para cookies cross-site no Render
+    sameSite: 'lax',
     maxAge: 24 * 60 * 60 * 1000 // 24 horas
   }
 }));
@@ -52,8 +52,18 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ error: 'E-mail ou senha incorretos' });
     }
 
-    // Verificar senha (comparação direta - a senha está na planilha)
-    if (password !== usuario.senha) {
+    // Verificar senha (aceita texto puro OU hash bcrypt)
+    let senhaValida = false;
+    
+    // Se a senha na planilha começa com $2a$ ou $2b$, é hash bcrypt
+    if (usuario.senha.startsWith('$2a$') || usuario.senha.startsWith('$2b$')) {
+      senhaValida = await verificarPassword(password, usuario.senha);
+    } else {
+      // Senha em texto puro - comparação direta
+      senhaValida = password === usuario.senha;
+    }
+    
+    if (!senhaValida) {
       return res.status(401).json({ error: 'E-mail ou senha incorretos' });
     }
 

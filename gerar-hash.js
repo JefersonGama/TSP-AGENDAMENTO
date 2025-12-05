@@ -3,7 +3,7 @@ const { hashPassword } = require('./auth');
 async function gerarHashSenha() {
   console.log('🔐 Gerador de Hash para Senhas\n');
   
-  const senha = '1234'; // ⚠️ MUDE ESTA SENHA AQUI
+  const senha = 'teste'; // ⚠️ MUDE ESTA SENHA AQUI
   
   console.log(`📝 Senha escolhida: ${senha}`);
   console.log('⏳ Gerando hash...\n');
