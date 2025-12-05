@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a4d65e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4fc3c3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a4d65e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7dd09b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4fc3c3;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle with gradient -->
+  <circle cx="200" cy="200" r="180" fill="url(#bgGradient)" opacity="0.1"/>
+  
+  <!-- Outer ring -->
+  <circle cx="200" cy="200" r="165" fill="none" stroke="#2d3436" stroke-width="12"/>
+  
+  <!-- Text on circle - Top -->
+  <path id="circlePath1" d="M 200,35 a 165,165 0 0,1 165,165" fill="none"/>
+  <text font-family="Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="3" fill="#a4d65e">
+    <textPath href="#circlePath1" startOffset="25%">
+      PARCEIRO AUTORIZADO
+    </textPath>
+  </text>
+  
+  <!-- Text on circle - Bottom -->
+  <path id="circlePath2" d="M 365,200 a 165,165 0 0,1 -165,165" fill="none"/>
+  <text font-family="Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="3" fill="#a4d65e">
+    <textPath href="#circlePath2" startOffset="25%">
+      PARCEIRO AUTORIZADO
+    </textPath>
+  </text>
+  
+  <!-- Logo icon - abstract triangular shapes -->
+  <g transform="translate(90, 140)">
+    <!-- Left triangle -->
+    <path d="M 0,30 L 30,0 L 30,60 Z" fill="url(#iconGradient)" opacity="0.8"/>
+    <!-- Middle shape -->
+    <path d="M 35,20 L 65,0 L 65,40 L 45,60 Z" fill="url(#iconGradient)"/>
+    <!-- Right triangle -->
+    <path d="M 70,10 L 100,30 L 70,50 Z" fill="url(#iconGradient)" opacity="0.8"/>
+  </g>
+  
+  <!-- TSP text -->
+  <text x="200" y="240" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#2d3436" text-anchor="middle">tsp</text>
+  
+  <!-- group text -->
+  <text x="260" y="250" font-family="Arial, sans-serif" font-size="28" fill="#636e72" text-anchor="start">group</text>
+</svg>

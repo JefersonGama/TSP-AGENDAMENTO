@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agenda - TSP Group</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <div class="header-left">
+                    <img src="/logo.svg" alt="TSP Group" class="logo-header">
+                    <div>
+                        <h1>Sistema de Agenda de Clientes</h1>
+                        <p class="company-name">TSP Group</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <span>👤 <span id="nome-usuario">Usuário</span></span>
+                    <button class="btn btn-logout" onclick="fazerLogout()">Sair</button>
+                </div>
+            </div>
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-total">0</span>
+                    <span class="stat-label">Total</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-pendentes">0</span>
+                    <span class="stat-label">Pendentes</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-confirmados">0</span>
+                    <span class="stat-label">Confirmados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="stat-concluidos">0</span>
+                    <span class="stat-label">Concluídos</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="abrirModal()">
+                    ➕ Novo Cliente
+                </button>
+                <button class="btn btn-sync" onclick="importarPlanilha()">
+                    📥 Importar Planilha
+                </button>
+                <button class="btn btn-sync" onclick="sincronizarPlanilha()">
+                    🔄 Sincronizar
+                </button>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" id="busca" placeholder="Buscar por nome ou telefone..." onkeyup="aplicarFiltros()">
+            </div>
+
+            <div class="filters">
+                <select id="filtro-status" onchange="aplicarFiltros()">
+                    <option value="">Todos os Status</option>
+                    <option value="Pendente">Pendente</option>
+                    <option value="Confirmado">Confirmado</option>
+                    <option value="Concluído">Concluído</option>
+                    <option value="Cancelado">Cancelado</option>
+                </select>
+
+                <input type="date" id="data-inicio" onchange="aplicarFiltros()">
+                <span>até</span>
+                <input type="date" id="data-fim" onchange="aplicarFiltros()">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="tabela-clientes">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Tipo de Serviço</th>
+                        <th>Status</th>
+                        <th>Observações</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo-tabela">
+                    <tr>
+                        <td colspan="8" class="loading">Carregando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <footer class="footer">
+            <p>© 2025 TSP Group - Parceiro Autorizado | Sistema de Gerenciamento de Clientes</p>
+        </footer>
+    </div>
+
+    <!-- Modal para Criar/Editar Cliente -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Novo Cliente</h2>
+                <span class="close" onclick="fecharModal()">&times;</span>
+            </div>
+            <form id="form-cliente" onsubmit="salvarCliente(event)">
+                <input type="hidden" id="cliente-id">
+                
+                <div class="form-group">
+                    <label for="nome">Nome do Cliente *</label>
+                    <input type="text" id="nome" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" id="telefone" placeholder="(00) 00000-0000">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data-agendamento">Data do Agendamento *</label>
+                        <input type="date" id="data-agendamento" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horario">Horário</label>
+                        <input type="time" id="horario">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipo-servico">Tipo de Serviço</label>
+                    <input type="text" id="tipo-servico" placeholder="Ex: Consulta, Reunião, Atendimento...">
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option value="Pendente">Pendente</option>
+                        <option value="Confirmado">Confirmado</option>
+                        <option value="Concluído">Concluído</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="observacoes">Observações</label>
+                    <textarea id="observacoes" rows="3" placeholder="Informações adicionais..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
