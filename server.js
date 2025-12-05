@@ -236,7 +236,7 @@ app.get('/api/clientes/:id', verificarAutenticacao, (req, res) => {
 
 // Criar novo cliente
 app.post('/api/clientes', verificarAutenticacao, (req, res) => {
-  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade } = req.body;
 
   if (!nome) {
     res.status(400).json({ error: 'Nome do cliente é obrigatório' });
@@ -244,13 +244,13 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
   }
 
   const query = `
-    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.run(
     query,
-    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -267,18 +267,18 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
 // Atualizar cliente
 app.put('/api/clientes/:id', verificarAutenticacao, (req, res) => {
   const { id } = req.params;
-  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador } = req.body;
+  const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade } = req.body;
 
   const query = `
     UPDATE clientes 
     SET sa = ?, nome = ?, telefone = ?, endereco = ?, 
-        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, atualizado_em = CURRENT_TIMESTAMP
+        tipo_servico = ?, micro_terr = ?, plano = ?, verificador = ?, cidade = ?, atualizado_em = CURRENT_TIMESTAMP
     WHERE id = ?
   `;
 
   db.run(
     query,
-    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, id],
+    [sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, id],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
@@ -354,13 +354,13 @@ app.post('/api/importar-planilha', verificarAutenticacao, async (req, res) => {
       try {
         await new Promise((resolve, reject) => {
           const query = `
-            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
           db.run(
             query,
             [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
-             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador],
+             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade],
             function(err) {
               if (err) reject(err);
               else resolve();
@@ -411,13 +411,13 @@ app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) =>
       try {
         await new Promise((resolve, reject) => {
           const query = `
-            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           `;
           db.run(
             query,
             [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
-             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador],
+             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade],
             function(err) {
               if (err) reject(err);
               else resolve();

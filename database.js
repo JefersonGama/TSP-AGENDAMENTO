@@ -18,6 +18,7 @@ db.serialize(() => {
       micro_terr TEXT,
       plano TEXT,
       verificador TEXT,
+      cidade TEXT,
       criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
       atualizado_em DATETIME DEFAULT CURRENT_TIMESTAMP
     )

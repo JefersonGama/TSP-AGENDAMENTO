@@ -70,15 +70,10 @@ async function carregarEstatisticas() {
 async function carregarClientes() {
     try {
         const busca = document.getElementById('busca').value;
-        const status = document.getElementById('filtro-status').value;
-        const dataInicio = document.getElementById('data-inicio').value;
-        const dataFim = document.getElementById('data-fim').value;
+        const filtroCidade = document.getElementById('filtro-cidade').value;
 
         let url = `${API_URL}/clientes?`;
         if (busca) url += `busca=${encodeURIComponent(busca)}&`;
-        if (status) url += `status=${encodeURIComponent(status)}&`;
-        if (dataInicio) url += `data_inicio=${dataInicio}&`;
-        if (dataFim) url += `data_fim=${dataFim}&`;
 
         const response = await fetch(url, {
             credentials: 'include'
@@ -89,7 +84,14 @@ async function carregarClientes() {
             return;
         }
 
-        const clientes = await response.json();
+        let clientes = await response.json();
+
+        // Filtrar por cidade no frontend
+        if (filtroCidade) {
+            clientes = clientes.filter(c => 
+                c.cidade && c.cidade.toLowerCase().includes(filtroCidade.toLowerCase())
+            );
+        }
 
         renderizarTabela(clientes);
         carregarEstatisticas();
@@ -104,7 +106,7 @@ function renderizarTabela(clientes) {
     const tbody = document.getElementById('corpo-tabela');
     
     if (clientes.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="empty">Nenhum cliente encontrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="empty">Nenhum cliente encontrado</td></tr>';
         return;
     }
 
@@ -118,6 +120,7 @@ function renderizarTabela(clientes) {
             <td>${cliente.micro_terr || '-'}</td>
             <td>${cliente.plano || '-'}</td>
             <td>${cliente.verificador || '-'}</td>
+            <td>${cliente.cidade || '-'}</td>
             <td>
                 <div class="actions">
                     <button class="btn btn-edit" onclick="editarCliente(${cliente.id})">✏️ Editar</button>
@@ -183,6 +186,7 @@ async function carregarClienteParaEdicao(id) {
         document.getElementById('micro-terr').value = cliente.micro_terr || '';
         document.getElementById('plano').value = cliente.plano || '';
         document.getElementById('verificador').value = cliente.verificador || '';
+        document.getElementById('cidade').value = cliente.cidade || '';
     } catch (error) {
         console.error('Erro ao carregar cliente:', error);
         mostrarErro('Erro ao carregar dados do cliente');
@@ -202,7 +206,8 @@ async function salvarCliente(event) {
         tipo_servico: document.getElementById('tipo-servico').value,
         micro_terr: document.getElementById('micro-terr').value,
         plano: document.getElementById('plano').value,
-        verificador: document.getElementById('verificador').value
+        verificador: document.getElementById('verificador').value,
+        cidade: document.getElementById('cidade').value
     };
 
     try {

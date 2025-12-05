@@ -3,7 +3,7 @@ const path = require('path');
 
 // ID da planilha do Google Sheets
 const SPREADSHEET_ID = '1j2eko9UmxAHGvtVkslvkz0B5rzODwba21YpFKnULYVE';
-const RANGE = 'SA!A:H'; // SA, Nome, Telefone, Endereço, Tipo serviço, MICRO TERR., Plano, VERIFICADOR
+const RANGE = 'banco!A:I'; // SA, Nome, Telefone, Endereço, Tipo serviço, MICRO TERR., Plano, VERIFICADOR, CIDADE
 const RANGE_USUARIOS = 'DADOS DE ACESSO!A:C'; // Aba de usuários
 
 async function importarDadosDaPlanilha() {
@@ -73,7 +73,7 @@ async function importarDadosDaPlanilha() {
 async function importarDadosPlanilhaPublica() {
   try {
     // URL para obter CSV da planilha pública
-    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=SA`;
+    const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=banco`;
     
     const fetch = (await import('node-fetch')).default;
     const response = await fetch(url);
@@ -96,6 +96,7 @@ async function importarDadosPlanilhaPublica() {
       micro_terr: row[5] || '',
       plano: row[6] || '',
       verificador: row[7] || '',
+      cidade: row[8] || '',
     })).filter(cliente => cliente.nome);
 
     return { sucesso: true, dados: clientes };

@@ -57,21 +57,11 @@
             </div>
             
             <div class="search-bar">
-                <input type="text" id="busca" placeholder="Buscar por nome ou telefone..." onkeyup="aplicarFiltros()">
+                <input type="text" id="busca" placeholder="Buscar por nome, telefone ou cidade..." onkeyup="aplicarFiltros()">
             </div>
 
             <div class="filters">
-                <select id="filtro-status" onchange="aplicarFiltros()">
-                    <option value="">Todos os Status</option>
-                    <option value="Pendente">Pendente</option>
-                    <option value="Confirmado">Confirmado</option>
-                    <option value="Concluído">Concluído</option>
-                    <option value="Cancelado">Cancelado</option>
-                </select>
-
-                <input type="date" id="data-inicio" onchange="aplicarFiltros()">
-                <span>até</span>
-                <input type="date" id="data-fim" onchange="aplicarFiltros()">
+                <input type="text" id="filtro-cidade" placeholder="Filtrar por cidade" onkeyup="aplicarFiltros()">
             </div>
         </div>
 
@@ -87,12 +77,13 @@
                         <th>MICRO TERR.</th>
                         <th>Plano</th>
                         <th>VERIFICADOR</th>
+                        <th>CIDADE</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela">
                     <tr>
-                        <td colspan="9" class="loading">Carregando...</td>
+                        <td colspan="10" class="loading">Carregando...</td>
                     </tr>
                 </tbody>
             </table>
@@ -151,6 +142,11 @@
                 <div class="form-group">
                     <label for="verificador">VERIFICADOR</label>
                     <input type="text" id="verificador" placeholder="Status de verificação">
+                </div>
+
+                <div class="form-group">
+                    <label for="cidade">CIDADE</label>
+                    <input type="text" id="cidade" placeholder="Cidade">
                 </div>
 
                 <div class="form-actions">
