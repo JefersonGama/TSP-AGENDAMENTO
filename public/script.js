@@ -11,6 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         carregarEstatisticas();
     }, 30000);
+    
+    // Atualizar lista de clientes a cada 15 segundos para ver mudanças de outros operadores
+    setInterval(() => {
+        carregarClientes();
+    }, 15000);
 });
 
 // Verificar se o usuário está autenticado
