@@ -180,12 +180,17 @@ async function buscarUsuariosDaPlanilha() {
     // Remover cabeçalho (primeira linha)
     const dados = rows.slice(1);
 
-    // Mapear dados da planilha
+    // Mapear dados da planilha - limpar espaços em branco
     const usuarios = dados.map(row => ({
-      nome: row[0] || '',
-      email: row[1] || '',
-      senha: row[2] || '',
+      nome: (row[0] || '').trim(),
+      email: (row[1] || '').trim().toLowerCase(),
+      senha: (row[2] || '').trim(),
     })).filter(usuario => usuario.nome && usuario.email && usuario.senha);
+
+    console.log('[SHEETS] Usuários encontrados na planilha:', usuarios.length);
+    usuarios.forEach(u => {
+      console.log(`[SHEETS] - ${u.nome} / ${u.email} / Senha: ${u.senha.substring(0, 10)}...`);
+    });
 
     return { sucesso: true, dados: usuarios };
   } catch (error) {
