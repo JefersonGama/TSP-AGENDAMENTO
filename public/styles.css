@@ -248,11 +248,14 @@ header h1 {
 .table-container {
     padding: 30px;
     overflow-x: auto;
+    max-width: 100%;
 }
 
 table {
     width: 100%;
+    min-width: 1800px;
     border-collapse: collapse;
+    table-layout: auto;
 }
 
 thead {
@@ -260,16 +263,20 @@ thead {
 }
 
 th {
-    padding: 15px;
+    padding: 12px 10px;
     text-align: left;
     font-weight: 600;
     color: #495057;
     border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+    font-size: 0.9rem;
 }
 
 td {
-    padding: 15px;
+    padding: 12px 10px;
     border-bottom: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    vertical-align: middle;
 }
 
 tbody tr {
@@ -359,7 +366,8 @@ tbody tr:hover {
 
 /* Célula de Observação */
 .observacao-cell {
-    max-width: 200px;
+    max-width: 250px;
+    min-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
