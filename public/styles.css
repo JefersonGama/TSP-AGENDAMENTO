@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-    max-width: 1400px;
+    max-width: 98%;
     margin: 0 auto;
     background: white;
     border-radius: 20px;
@@ -246,16 +246,16 @@ header h1 {
 }
 
 .table-container {
-    padding: 30px;
+    padding: 20px;
     overflow-x: auto;
-    max-width: 100%;
+    width: 100%;
 }
 
 table {
     width: 100%;
-    min-width: 1800px;
+    min-width: 2000px;
     border-collapse: collapse;
-    table-layout: auto;
+    table-layout: fixed;
 }
 
 thead {
@@ -263,20 +263,35 @@ thead {
 }
 
 th {
-    padding: 12px 10px;
+    padding: 10px 8px;
     text-align: left;
     font-weight: 600;
     color: #495057;
     border-bottom: 2px solid #dee2e6;
     white-space: nowrap;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
+th:nth-child(1) { width: 80px; } /* SA */
+th:nth-child(2) { width: 150px; } /* Nome */
+th:nth-child(3) { width: 110px; } /* Telefone */
+th:nth-child(4) { width: 220px; } /* Endereço */
+th:nth-child(5) { width: 120px; } /* Tipo de Serviço */
+th:nth-child(6) { width: 90px; } /* MICRO TERR */
+th:nth-child(7) { width: 140px; } /* Plano */
+th:nth-child(8) { width: 100px; } /* VERIFICADOR */
+th:nth-child(9) { width: 110px; } /* CIDADE */
+th:nth-child(10) { width: 140px; } /* Status */
+th:nth-child(11) { width: 180px; } /* Observação */
+th:nth-child(12) { width: 160px; } /* Ações */
+
 td {
-    padding: 12px 10px;
+    padding: 10px 8px;
     border-bottom: 1px solid #dee2e6;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 tbody tr {
