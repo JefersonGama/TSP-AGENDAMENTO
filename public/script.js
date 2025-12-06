@@ -418,9 +418,9 @@ async function alterarStatus(id, novoStatus) {
     }
 }
 
-// Sincronizar (limpar e importar)
+// Sincronizar (atualizar inteligente)
 async function sincronizarPlanilha() {
-    if (!confirm('⚠️ ATENÇÃO!\n\nEsta ação irá APAGAR TODOS os dados atuais e substituir pelos dados da planilha.\n\nDeseja continuar?')) {
+    if (!confirm('🔄 Sincronizar planilha?\n\n✅ Novos registros serão adicionados\n✅ Dados existentes serão atualizados\n✅ Status e Observações manuais serão mantidos\n\nDeseja continuar?')) {
         return;
     }
 
@@ -440,7 +440,10 @@ async function sincronizarPlanilha() {
         if (response.ok) {
             carregarClientes();
             alert(`✅ Sincronização concluída!\n\n` +
-                  `Total de registros importados: ${resultado.importados}`);
+                  `Novos: ${resultado.novos}\n` +
+                  `Atualizados: ${resultado.atualizados}\n` +
+                  `Total na planilha: ${resultado.total}\n\n` +
+                  `ℹ️ O sistema sincroniza automaticamente a cada 5 minutos`);
         } else {
             alert('❌ Erro: ' + resultado.error);
         }

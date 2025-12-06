@@ -425,18 +425,10 @@ app.post('/api/importar-planilha', verificarAutenticacao, async (req, res) => {
   }
 });
 
-// Sincronizar (limpar e reimportar)
+// Sincronizar (atualizar sem perder dados manuais)
 app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) => {
   try {
-    console.log('[API] Iniciando sincronização...');
-    // Limpar tabela
-    await new Promise((resolve, reject) => {
-      db.run('DELETE FROM clientes', (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-    console.log('[API] Tabela limpa com sucesso');
+    console.log('[API] Iniciando sincronização inteligente...');
 
     const resultado = await importarDadosDaPlanilha();
 
@@ -452,34 +444,69 @@ app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) =>
     }
 
     const clientes = resultado.dados;
-    let importados = 0;
+    let atualizados = 0;
+    let novos = 0;
 
     for (const cliente of clientes) {
       try {
-        await new Promise((resolve, reject) => {
-          const query = `
-            INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `;
-          db.run(
-            query,
-            [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
-             cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, 'COP'],
-            function(err) {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+        // Verificar se cliente já existe pelo SA
+        const existe = await new Promise((resolve, reject) => {
+          db.get('SELECT id, status, observacao FROM clientes WHERE sa = ?', [cliente.sa], (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          });
         });
-        importados++;
+
+        if (existe) {
+          // Atualizar dados da planilha, mas manter status e observacao do banco
+          await new Promise((resolve, reject) => {
+            const query = `
+              UPDATE clientes 
+              SET nome = ?, telefone = ?, endereco = ?, tipo_servico = ?, 
+                  micro_terr = ?, plano = ?, verificador = ?, cidade = ?, atualizado_em = CURRENT_TIMESTAMP
+              WHERE sa = ?
+            `;
+            db.run(
+              query,
+              [cliente.nome, cliente.telefone, cliente.endereco, cliente.tipo_servico,
+               cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, cliente.sa],
+              function(err) {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+          });
+          atualizados++;
+        } else {
+          // Inserir novo cliente
+          await new Promise((resolve, reject) => {
+            const query = `
+              INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            db.run(
+              query,
+              [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
+               cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, 'COP'],
+              function(err) {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+          });
+          novos++;
+        }
       } catch (err) {
-        console.error('Erro ao inserir cliente:', err);
+        console.error('Erro ao processar cliente:', err);
       }
     }
 
+    console.log(`[API] Sincronização concluída: ${novos} novos, ${atualizados} atualizados`);
+
     res.json({
       mensagem: 'Sincronização concluída',
-      importados,
+      novos,
+      atualizados,
       total: clientes.length
     });
   } catch (error) {
@@ -497,7 +524,106 @@ app.get('/', (req, res) => {
   }
 });
 
+// Sincronização automática a cada 5 minutos
+let intervalSincronizacao = null;
+
+function iniciarSincronizacaoAutomatica() {
+  console.log('[SYNC] Iniciando sincronização automática a cada 5 minutos...');
+  
+  // Fazer primeira sincronização após 30 segundos do servidor iniciar
+  setTimeout(() => {
+    sincronizarAutomaticamente();
+  }, 30000);
+
+  // Depois a cada 5 minutos
+  intervalSincronizacao = setInterval(() => {
+    sincronizarAutomaticamente();
+  }, 5 * 60 * 1000); // 5 minutos
+}
+
+async function sincronizarAutomaticamente() {
+  try {
+    console.log('[SYNC] Executando sincronização automática...');
+    
+    const resultado = await importarDadosDaPlanilha();
+
+    if (!resultado.sucesso) {
+      console.error('[SYNC] Erro na sincronização automática:', resultado.mensagem);
+      return;
+    }
+
+    const clientes = resultado.dados;
+    let atualizados = 0;
+    let novos = 0;
+
+    for (const cliente of clientes) {
+      try {
+        const existe = await new Promise((resolve, reject) => {
+          db.get('SELECT id FROM clientes WHERE sa = ?', [cliente.sa], (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          });
+        });
+
+        if (existe) {
+          await new Promise((resolve, reject) => {
+            const query = `
+              UPDATE clientes 
+              SET nome = ?, telefone = ?, endereco = ?, tipo_servico = ?, 
+                  micro_terr = ?, plano = ?, verificador = ?, cidade = ?, atualizado_em = CURRENT_TIMESTAMP
+              WHERE sa = ?
+            `;
+            db.run(
+              query,
+              [cliente.nome, cliente.telefone, cliente.endereco, cliente.tipo_servico,
+               cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, cliente.sa],
+              function(err) {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+          });
+          atualizados++;
+        } else {
+          await new Promise((resolve, reject) => {
+            const query = `
+              INSERT INTO clientes (sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+            db.run(
+              query,
+              [cliente.sa, cliente.nome, cliente.telefone, cliente.endereco, 
+               cliente.tipo_servico, cliente.micro_terr, cliente.plano, cliente.verificador, cliente.cidade, 'COP'],
+              function(err) {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+          });
+          novos++;
+        }
+      } catch (err) {
+        console.error('[SYNC] Erro ao processar cliente:', err);
+      }
+    }
+
+    console.log(`[SYNC] ✅ Sincronização automática concluída: ${novos} novos, ${atualizados} atualizados de ${clientes.length} total`);
+  } catch (error) {
+    console.error('[SYNC] Erro na sincronização automática:', error);
+  }
+}
+
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
+  
+  // Iniciar sincronização automática
+  iniciarSincronizacaoAutomatica();
+});
+
+// Limpar intervalo ao encerrar
+process.on('SIGTERM', () => {
+  console.log('[SYNC] Parando sincronização automática...');
+  if (intervalSincronizacao) clearInterval(intervalSincronizacao);
+  process.exit(0);
 });
