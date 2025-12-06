@@ -137,6 +137,14 @@ async function carregarClientes() {
             );
         }
 
+        // Filtrar por MICRO TERR no frontend
+        const filtroMicroTerr = document.getElementById('filtro-micro-terr').value;
+        if (filtroMicroTerr) {
+            clientes = clientes.filter(c => 
+                c.micro_terr && c.micro_terr.toLowerCase().includes(filtroMicroTerr.toLowerCase())
+            );
+        }
+
         renderizarTabela(clientes);
         carregarEstatisticas();
     } catch (error) {
