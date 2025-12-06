@@ -8,7 +8,7 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: linear-gradient(135deg, #a4d65e 0%, #4fc3c3 100%);
     min-height: 100vh;
-    padding: 20px;
+    padding: 10px;
 }
 
 .container {
@@ -246,16 +246,18 @@ header h1 {
 }
 
 .table-container {
-    padding: 20px;
-    overflow-x: auto;
+    padding: 15px;
+    overflow-x: auto !important;
+    overflow-y: visible;
     width: 100%;
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
     width: 100%;
-    min-width: 2000px;
+    min-width: 2200px !important;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: fixed !important;
 }
 
 thead {
@@ -272,18 +274,31 @@ th {
     font-size: 0.85rem;
 }
 
-th:nth-child(1) { width: 80px; } /* SA */
-th:nth-child(2) { width: 150px; } /* Nome */
-th:nth-child(3) { width: 110px; } /* Telefone */
-th:nth-child(4) { width: 220px; } /* Endereço */
-th:nth-child(5) { width: 120px; } /* Tipo de Serviço */
-th:nth-child(6) { width: 90px; } /* MICRO TERR */
-th:nth-child(7) { width: 140px; } /* Plano */
-th:nth-child(8) { width: 100px; } /* VERIFICADOR */
-th:nth-child(9) { width: 110px; } /* CIDADE */
-th:nth-child(10) { width: 140px; } /* Status */
-th:nth-child(11) { width: 180px; } /* Observação */
-th:nth-child(12) { width: 160px; } /* Ações */
+th:nth-child(1) { width: 90px !important; min-width: 90px; } /* SA */
+th:nth-child(2) { width: 160px !important; min-width: 160px; } /* Nome */
+th:nth-child(3) { width: 120px !important; min-width: 120px; } /* Telefone */
+th:nth-child(4) { width: 250px !important; min-width: 250px; } /* Endereço */
+th:nth-child(5) { width: 130px !important; min-width: 130px; } /* Tipo de Serviço */
+th:nth-child(6) { width: 100px !important; min-width: 100px; } /* MICRO TERR */
+th:nth-child(7) { width: 150px !important; min-width: 150px; } /* Plano */
+th:nth-child(8) { width: 110px !important; min-width: 110px; } /* VERIFICADOR */
+th:nth-child(9) { width: 120px !important; min-width: 120px; } /* CIDADE */
+th:nth-child(10) { width: 150px !important; min-width: 150px; } /* Status */
+th:nth-child(11) { width: 200px !important; min-width: 200px; } /* Observação */
+th:nth-child(12) { width: 180px !important; min-width: 180px; } /* Ações */
+
+td:nth-child(1) { width: 90px !important; }
+td:nth-child(2) { width: 160px !important; }
+td:nth-child(3) { width: 120px !important; }
+td:nth-child(4) { width: 250px !important; }
+td:nth-child(5) { width: 130px !important; }
+td:nth-child(6) { width: 100px !important; }
+td:nth-child(7) { width: 150px !important; }
+td:nth-child(8) { width: 110px !important; }
+td:nth-child(9) { width: 120px !important; }
+td:nth-child(10) { width: 150px !important; }
+td:nth-child(11) { width: 200px !important; }
+td:nth-child(12) { width: 180px !important; }
 
 td {
     padding: 10px 8px;
