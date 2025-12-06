@@ -44,10 +44,11 @@ header {
 .logo-header {
     width: 80px;
     height: 80px;
-    background: white;
-    border-radius: 50%;
-    padding: 5px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+    object-fit: contain;
 }
 
 header h1 {
