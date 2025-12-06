@@ -71,6 +71,18 @@ header h1 {
     font-size: 1rem;
 }
 
+.sync-info {
+    text-align: center;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: white;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
 .btn-logout {
     background: rgba(255, 255, 255, 0.2);
     color: white;

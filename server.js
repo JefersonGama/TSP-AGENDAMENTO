@@ -361,6 +361,7 @@ app.get('/api/estatisticas', verificarAutenticacao, (req, res) => {
       }
       completed++;
       if (completed === Object.keys(queries).length) {
+        stats.ultimaSincronizacao = ultimaSincronizacao ? ultimaSincronizacao.toISOString() : null;
         res.json(stats);
       }
     });
@@ -529,14 +530,17 @@ app.post('/api/sincronizar-planilha', verificarAutenticacao, async (req, res) =>
       console.error('[API] Erro ao remover clientes obsoletos:', err);
     }
 
+    ultimaSincronizacao = new Date();
     console.log(`[API] Sincronização concluída: ${novos} novos, ${atualizados} atualizados, ${removidos} removidos`);
+    console.log(`[API] 🕐 Última sincronização: ${ultimaSincronizacao.toLocaleString('pt-BR')}`);
 
     res.json({
       mensagem: 'Sincronização concluída',
       novos,
       atualizados,
       removidos,
-      total: clientes.length
+      total: clientes.length,
+      ultimaSincronizacao: ultimaSincronizacao.toISOString()
     });
   } catch (error) {
     console.error('Erro na sincronização:', error);
@@ -556,6 +560,7 @@ app.get('/', (req, res) => {
 // Sincronização automática a cada 5 minutos
 let intervalSincronizacao = null;
 let intervalLimpezaDiaria = null;
+let ultimaSincronizacao = null;
 
 function iniciarSincronizacaoAutomatica() {
   console.log('[SYNC] Iniciando sincronização automática a cada 5 minutos...');
@@ -716,7 +721,9 @@ async function sincronizarAutomaticamente() {
       console.error('[SYNC] Erro ao remover clientes obsoletos:', err);
     }
 
+    ultimaSincronizacao = new Date();
     console.log(`[SYNC] ✅ Sincronização automática concluída: ${novos} novos, ${atualizados} atualizados, ${removidos} removidos de ${clientes.length} total`);
+    console.log(`[SYNC] 🕐 Última sincronização: ${ultimaSincronizacao.toLocaleString('pt-BR')}`);
   } catch (error) {
     console.error('[SYNC] Erro na sincronização automática:', error);
   }

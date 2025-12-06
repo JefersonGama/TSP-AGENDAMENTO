@@ -6,6 +6,11 @@ let usuarioAtual = null;
 // Carregar dados ao iniciar
 document.addEventListener('DOMContentLoaded', () => {
     verificarAutenticacao();
+    
+    // Atualizar timestamp a cada 30 segundos
+    setInterval(() => {
+        carregarEstatisticas();
+    }, 30000);
 });
 
 // Verificar se o usuário está autenticado
@@ -61,6 +66,22 @@ async function carregarEstatisticas() {
         document.getElementById('stat-pendentes').textContent = stats.pendentes || 0;
         document.getElementById('stat-confirmados').textContent = stats.confirmados || 0;
         document.getElementById('stat-concluidos').textContent = stats.concluidos || 0;
+        
+        // Atualizar timestamp da última sincronização
+        if (stats.ultimaSincronizacao) {
+            const data = new Date(stats.ultimaSincronizacao);
+            const dataFormatada = data.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('ultima-sincronizacao').textContent = `🕐 Última sincronização: ${dataFormatada}`;
+        } else {
+            document.getElementById('ultima-sincronizacao').textContent = '🕐 Aguardando primeira sincronização...';
+        }
     } catch (error) {
         console.error('Erro ao carregar estatísticas:', error);
     }
@@ -439,6 +460,7 @@ async function sincronizarPlanilha() {
 
         if (response.ok) {
             carregarClientes();
+            carregarEstatisticas(); // Atualizar timestamp
             alert(`✅ Sincronização concluída!\n\n` +
                   `➕ Novos: ${resultado.novos}\n` +
                   `🔄 Atualizados: ${resultado.atualizados}\n` +
