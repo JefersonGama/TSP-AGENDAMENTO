@@ -40,7 +40,10 @@ app.use(express.static('public'));
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
+  console.log('[LOGIN] Tentativa de login - Username:', username);
+
   if (!username || !password) {
+    console.log('[LOGIN] ❌ Campos obrigatórios faltando');
     return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
   }
 
@@ -49,8 +52,12 @@ app.post('/api/login', async (req, res) => {
     const usuario = await buscarUsuarioPorEmail(username);
 
     if (!usuario) {
+      console.log('[LOGIN] ❌ Usuário não encontrado:', username);
       return res.status(401).json({ error: 'E-mail ou senha incorretos' });
     }
+
+    console.log('[LOGIN] Usuário encontrado:', usuario.nome);
+    console.log('[LOGIN] Tipo de senha na planilha:', usuario.senha.startsWith('$2') ? 'Hash bcrypt' : 'Texto puro');
 
     // Verificar senha (aceita texto puro OU hash bcrypt)
     let senhaValida = false;
@@ -58,12 +65,17 @@ app.post('/api/login', async (req, res) => {
     // Se a senha na planilha começa com $2a$ ou $2b$, é hash bcrypt
     if (usuario.senha.startsWith('$2a$') || usuario.senha.startsWith('$2b$')) {
       senhaValida = await verificarPassword(password, usuario.senha);
+      console.log('[LOGIN] Verificação bcrypt:', senhaValida ? '✅ Válida' : '❌ Inválida');
     } else {
       // Senha em texto puro - comparação direta
       senhaValida = password === usuario.senha;
+      console.log('[LOGIN] Comparação texto puro:', senhaValida ? '✅ Válida' : '❌ Inválida');
+      console.log('[LOGIN] Senha digitada:', password);
+      console.log('[LOGIN] Senha na planilha:', usuario.senha);
     }
     
     if (!senhaValida) {
+      console.log('[LOGIN] ❌ Senha incorreta para:', username);
       return res.status(401).json({ error: 'E-mail ou senha incorretos' });
     }
 

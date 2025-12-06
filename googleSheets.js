@@ -197,19 +197,30 @@ async function buscarUsuariosDaPlanilha() {
 // Buscar usuário específico por email
 async function buscarUsuarioPorEmail(email) {
   try {
+    console.log('[AUTH] Buscando usuário:', email);
     const resultado = await buscarUsuariosDaPlanilha();
     
     if (!resultado.sucesso) {
+      console.error('[AUTH] Erro ao buscar usuários da planilha:', resultado.mensagem);
       return null;
     }
+
+    console.log('[AUTH] Total de usuários na planilha:', resultado.dados.length);
+    console.log('[AUTH] Usuários disponíveis:', resultado.dados.map(u => u.email).join(', '));
 
     const usuario = resultado.dados.find(u => 
       u.email.toLowerCase() === email.toLowerCase()
     );
 
+    if (usuario) {
+      console.log('[AUTH] ✅ Usuário encontrado:', usuario.nome, '/', usuario.email);
+    } else {
+      console.log('[AUTH] ❌ Usuário não encontrado com email:', email);
+    }
+
     return usuario || null;
   } catch (error) {
-    console.error('Erro ao buscar usuário por email:', error);
+    console.error('[AUTH] Erro ao buscar usuário por email:', error);
     return null;
   }
 }
