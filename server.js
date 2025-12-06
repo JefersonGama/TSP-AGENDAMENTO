@@ -316,7 +316,10 @@ app.put('/api/clientes/:id/status', verificarAutenticacao, (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
+  console.log(`[API] 🔄 Recebida requisição para alterar status - ID: ${id}, Novo Status: ${status}`);
+
   if (!status) {
+    console.log('[API] ❌ Status não fornecido');
     return res.status(400).json({ error: 'Status é obrigatório' });
   }
 
@@ -324,15 +327,24 @@ app.put('/api/clientes/:id/status', verificarAutenticacao, (req, res) => {
 
   db.run(query, [status, id], function(err) {
     if (err) {
-      console.error('[API] Erro ao atualizar status:', err);
+      console.error('[API] ❌ Erro ao atualizar status:', err);
       res.status(500).json({ error: err.message });
       return;
     }
     if (this.changes === 0) {
+      console.log(`[API] ⚠️ Cliente ID ${id} não encontrado`);
       res.status(404).json({ error: 'Cliente não encontrado' });
       return;
     }
-    console.log(`[API] Status do cliente ${id} alterado para: ${status}`);
+    console.log(`[API] ✅ Status do cliente ${id} alterado para: ${status} (${this.changes} linha(s) afetada(s))`);
+    
+    // Verificar se realmente foi salvo
+    db.get('SELECT id, nome, status FROM clientes WHERE id = ?', [id], (err, row) => {
+      if (!err && row) {
+        console.log(`[API] 🔍 Verificação - Cliente ${row.id} (${row.nome}): status = "${row.status}"`);
+      }
+    });
+    
     res.json({ message: 'Status atualizado com sucesso' });
   });
 });

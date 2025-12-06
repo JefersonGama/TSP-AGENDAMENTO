@@ -423,6 +423,8 @@ function copiarTelefones() {
 // Alterar status do cliente
 async function alterarStatus(id, novoStatus) {
     try {
+        console.log(`[FRONTEND] Alterando status - ID: ${id}, Novo Status: ${novoStatus}`);
+        
         const response = await fetch(`${API_URL}/clientes/${id}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -431,14 +433,20 @@ async function alterarStatus(id, novoStatus) {
         });
 
         if (response.ok) {
+            console.log(`[FRONTEND] ✅ Status alterado com sucesso`);
             mostrarSucesso('Status alterado com sucesso!');
+            // Aguardar 1 segundo e recarregar para confirmar mudança
+            setTimeout(() => {
+                carregarClientes();
+            }, 1000);
         } else {
             const error = await response.json();
+            console.error(`[FRONTEND] ❌ Erro ao alterar status:`, error);
             mostrarErro(error.error || 'Erro ao alterar status');
             carregarClientes(); // Recarregar para reverter o select
         }
     } catch (error) {
-        console.error('Erro ao alterar status:', error);
+        console.error('[FRONTEND] ❌ Erro ao alterar status:', error);
         mostrarErro('Erro ao alterar status');
         carregarClientes(); // Recarregar para reverter o select
     }
