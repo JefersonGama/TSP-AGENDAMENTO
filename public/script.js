@@ -440,10 +440,13 @@ async function sincronizarPlanilha() {
         if (response.ok) {
             carregarClientes();
             alert(`✅ Sincronização concluída!\n\n` +
-                  `Novos: ${resultado.novos}\n` +
-                  `Atualizados: ${resultado.atualizados}\n` +
-                  `Total na planilha: ${resultado.total}\n\n` +
-                  `ℹ️ O sistema sincroniza automaticamente a cada 5 minutos`);
+                  `➕ Novos: ${resultado.novos}\n` +
+                  `🔄 Atualizados: ${resultado.atualizados}\n` +
+                  `🗑️ Removidos: ${resultado.removidos}\n` +
+                  `📊 Total na planilha: ${resultado.total}\n\n` +
+                  `ℹ️ Sincronização automática:\n` +
+                  `• A cada 5 minutos\n` +
+                  `• Limpeza diária às 04:00`);
         } else {
             alert('❌ Erro: ' + resultado.error);
         }
