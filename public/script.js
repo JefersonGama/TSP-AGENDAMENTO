@@ -97,9 +97,9 @@ async function carregarClientes() {
     try {
         const busca = document.getElementById('busca').value;
         const filtroCidade = document.getElementById('filtro-cidade').value;
+        const filtroVerificador = document.getElementById('filtro-verificador').value;
 
-        let url = `${API_URL}/clientes?`;
-        if (busca) url += `busca=${encodeURIComponent(busca)}&`;
+        let url = `${API_URL}/clientes`;
 
         const response = await fetch(url, {
             credentials: 'include'
@@ -112,10 +112,28 @@ async function carregarClientes() {
 
         let clientes = await response.json();
 
+        // Filtrar por busca geral (SA, nome, telefone, endereço) no frontend
+        if (busca) {
+            const buscaLower = busca.toLowerCase();
+            clientes = clientes.filter(c => 
+                (c.sa && c.sa.toLowerCase().includes(buscaLower)) ||
+                (c.nome && c.nome.toLowerCase().includes(buscaLower)) ||
+                (c.telefone && c.telefone.toLowerCase().includes(buscaLower)) ||
+                (c.endereco && c.endereco.toLowerCase().includes(buscaLower))
+            );
+        }
+
         // Filtrar por cidade no frontend
         if (filtroCidade) {
             clientes = clientes.filter(c => 
                 c.cidade && c.cidade.toLowerCase().includes(filtroCidade.toLowerCase())
+            );
+        }
+
+        // Filtrar por verificador no frontend
+        if (filtroVerificador) {
+            clientes = clientes.filter(c => 
+                c.verificador && c.verificador.toLowerCase().includes(filtroVerificador.toLowerCase())
             );
         }
 

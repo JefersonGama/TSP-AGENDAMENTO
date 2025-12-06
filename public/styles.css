@@ -171,6 +171,19 @@ header h1 {
     flex-wrap: wrap;
 }
 
+.filters input {
+    padding: 10px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    min-width: 200px;
+}
+
+.filters input:focus {
+    outline: none;
+    border-color: #4fc3c3;
+}
+
 .filters select,
 .filters input[type="date"] {
     padding: 10px;
