@@ -240,6 +240,8 @@ app.get('/api/clientes/:id', verificarAutenticacao, (req, res) => {
 app.post('/api/clientes', verificarAutenticacao, (req, res) => {
   const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, observacao } = req.body;
 
+  console.log('[API] Criar cliente - observacao recebida:', observacao);
+
   if (!nome) {
     res.status(400).json({ error: 'Nome do cliente é obrigatório' });
     return;
@@ -270,6 +272,8 @@ app.post('/api/clientes', verificarAutenticacao, (req, res) => {
 app.put('/api/clientes/:id', verificarAutenticacao, (req, res) => {
   const { id } = req.params;
   const { sa, nome, telefone, endereco, tipo_servico, micro_terr, plano, verificador, cidade, status, observacao } = req.body;
+
+  console.log('[API] Atualizar cliente', id, '- observacao recebida:', observacao);
 
   const query = `
     UPDATE clientes 

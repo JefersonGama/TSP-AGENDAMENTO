@@ -26,18 +26,24 @@ db.serialize(() => {
     )
   `);
 
-  // Adicionar coluna status se não existir
-  db.run(`ALTER TABLE clientes ADD COLUMN status TEXT DEFAULT 'COP'`, (err) => {
-    if (err && !err.message.includes('duplicate column')) {
-      console.error('Erro ao adicionar coluna status:', err);
-    }
-  });
+  // Adicionar colunas que podem não existir em bancos antigos
+  const colunasAdicionais = [
+    { nome: 'sa', tipo: 'TEXT' },
+    { nome: 'endereco', tipo: 'TEXT' },
+    { nome: 'micro_terr', tipo: 'TEXT' },
+    { nome: 'plano', tipo: 'TEXT' },
+    { nome: 'verificador', tipo: 'TEXT' },
+    { nome: 'cidade', tipo: 'TEXT' },
+    { nome: 'status', tipo: 'TEXT DEFAULT "COP"' },
+    { nome: 'observacao', tipo: 'TEXT' }
+  ];
 
-  // Adicionar coluna observacao se não existir
-  db.run(`ALTER TABLE clientes ADD COLUMN observacao TEXT`, (err) => {
-    if (err && !err.message.includes('duplicate column')) {
-      console.error('Erro ao adicionar coluna observacao:', err);
-    }
+  colunasAdicionais.forEach(coluna => {
+    db.run(`ALTER TABLE clientes ADD COLUMN ${coluna.nome} ${coluna.tipo}`, (err) => {
+      if (err && !err.message.includes('duplicate column')) {
+        console.error(`Erro ao adicionar coluna ${coluna.nome}:`, err);
+      }
+    });
   });
 
   // Tabela de usuários
